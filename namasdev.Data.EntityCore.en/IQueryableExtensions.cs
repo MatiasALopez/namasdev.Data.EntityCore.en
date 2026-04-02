@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace namasdev.Data.EntityFramework
+namespace namasdev.Data.EntityCore
 {
     public static class IQueryableExtensions
     {

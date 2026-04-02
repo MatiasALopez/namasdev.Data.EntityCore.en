@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using namasdev.Core.Entity;
 
-namespace namasdev.Data.EntityFramework.Config
+namespace namasdev.Data.EntityCore.Config
 {
     public abstract class EntityDeletedConfigBase<TEntity> : IEntityTypeConfiguration<TEntity>
         where TEntity : class, IEntityDeleted

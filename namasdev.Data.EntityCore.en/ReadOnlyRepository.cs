@@ -11,10 +11,10 @@ using namasdev.Core.Entity;
 using namasdev.Core.Linq;
 using namasdev.Core.Reflection;
 
-namespace namasdev.Data.EntityFramework
+namespace namasdev.Data.EntityCore
 {
-    public class ReadOnlyRepository<TDbContext, TEntity, TId> : IReadOnlyRepository<TEntity, TId>
-        where TDbContext : DbContextBase, new()
+    public class ReadOnlyRepository<TDbContext, TEntity, TId> : RepositoryBase<TDbContext>, IReadOnlyRepository<TEntity, TId>
+        where TDbContext : DbContextBase
         where TEntity : class, IEntity<TId>, new()
         where TId : IEquatable<TId>
     {
@@ -22,6 +22,11 @@ namespace namasdev.Data.EntityFramework
             ReflectionHelper.ClassImplementsInterface<TEntity, IEntityDeleted>()
             ? BuildNotDeletedPredicate()
             : null;
+
+        public ReadOnlyRepository(IDbContextFactory<TDbContext> factory)
+            : base(factory)
+        {
+        }
 
         private static Expression<Func<TEntity, bool>> BuildNotDeletedPredicate()
         {
@@ -52,7 +57,7 @@ namespace namasdev.Data.EntityFramework
             IEnumerable<string> loadProperties,
             bool includeDeleted = false)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -67,7 +72,7 @@ namespace namasdev.Data.EntityFramework
             bool includeDeleted = false,
             CancellationToken ct = default)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return await ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -81,7 +86,7 @@ namespace namasdev.Data.EntityFramework
             IEnumerable<Expression<Func<TEntity, object>>> loadProperties,
             bool includeDeleted = false)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -96,7 +101,7 @@ namespace namasdev.Data.EntityFramework
             bool includeDeleted = false,
             CancellationToken ct = default)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return await ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -110,7 +115,7 @@ namespace namasdev.Data.EntityFramework
             ILoadProperties<TEntity> loadProperties,
             bool includeDeleted = false)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -125,7 +130,7 @@ namespace namasdev.Data.EntityFramework
             bool includeDeleted = false,
             CancellationToken ct = default)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return await ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -162,7 +167,7 @@ namespace namasdev.Data.EntityFramework
             bool includeDeleted = false,
             OrderAndPagingParameters op = null)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -178,7 +183,7 @@ namespace namasdev.Data.EntityFramework
             OrderAndPagingParameters op = null,
             CancellationToken ct = default)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return await ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -193,7 +198,7 @@ namespace namasdev.Data.EntityFramework
             bool includeDeleted = false,
             OrderAndPagingParameters op = null)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -209,7 +214,7 @@ namespace namasdev.Data.EntityFramework
             OrderAndPagingParameters op = null,
             CancellationToken ct = default)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return await ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -224,7 +229,7 @@ namespace namasdev.Data.EntityFramework
             bool includeDeleted = false,
             OrderAndPagingParameters op = null)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -240,7 +245,7 @@ namespace namasdev.Data.EntityFramework
             OrderAndPagingParameters op = null,
             CancellationToken ct = default)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return await ctx.Set<TEntity>()
                     .IncludeMultiple(loadProperties)
@@ -253,7 +258,7 @@ namespace namasdev.Data.EntityFramework
         public bool ExistsById(TId id,
             bool includeDeleted = false)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return ctx.Set<TEntity>()
                     .Where(e => e.Id.Equals(id))
@@ -266,7 +271,7 @@ namespace namasdev.Data.EntityFramework
             bool includeDeleted = false,
             CancellationToken ct = default)
         {
-            using (var ctx = new TDbContext())
+            using (var ctx = DbContextFactory.CreateDbContext())
             {
                 return await ctx.Set<TEntity>()
                     .Where(e => e.Id.Equals(id))
@@ -274,6 +279,9 @@ namespace namasdev.Data.EntityFramework
                     .AnyAsync(ct);
             }
         }
+
+        protected DbSet<TEntity> EntitySet(TDbContext ctx)
+            => ctx.Set<TEntity>();
 
         private IQueryable<TEntity> FilterDeleted(IQueryable<TEntity> query, bool includeDeleted)
         {

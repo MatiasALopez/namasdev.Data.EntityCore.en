@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using namasdev.Core.Entity;
 using namasdev.Core.Validation;
 
-namespace namasdev.Data.EntityFramework
+namespace namasdev.Data.EntityCore
 {
     public class DbContextBase : DbContext
     {
@@ -93,10 +93,10 @@ namespace namasdev.Data.EntityFramework
         }
 
         public TResult ExecuteQueryAndGet<TResult>(string query,
-            params object[] parameters)
+            object[] parameters = null)
         {
             return Database
-                .SqlQueryRaw<TResult>(query, parameters)
+                .SqlQueryRaw<TResult>(query, parameters ?? Array.Empty<object>())
                 .FirstOrDefault();
         }
 
@@ -105,15 +105,15 @@ namespace namasdev.Data.EntityFramework
             CancellationToken ct = default)
         {
             return await Database
-                .SqlQueryRaw<TResult>(query, parameters)
+                .SqlQueryRaw<TResult>(query, parameters ?? Array.Empty<object>())
                 .FirstOrDefaultAsync(ct);
         }
 
         public List<TResult> ExecuteQueryAndGetList<TResult>(string query,
-            params object[] parameters)
+            object[] parameters = null)
         {
             return Database
-                .SqlQueryRaw<TResult>(query, parameters)
+                .SqlQueryRaw<TResult>(query, parameters ?? Array.Empty<object>())
                 .ToList();
         }
 
@@ -122,21 +122,21 @@ namespace namasdev.Data.EntityFramework
             CancellationToken ct = default)
         {
             return await Database
-                .SqlQueryRaw<TResult>(query, parameters)
+                .SqlQueryRaw<TResult>(query, parameters ?? Array.Empty<object>())
                 .ToListAsync(ct);
         }
 
         public void ExecuteCommand(string command,
             object[] parameters = null)
         {
-            Database.ExecuteSqlRaw(command);
+            Database.ExecuteSqlRaw(command, parameters ?? Array.Empty<object>());
         }
 
         public async Task ExecuteCommandAsync(string command,
             object[] parameters = null,
             CancellationToken ct = default)
         {
-            await Database.ExecuteSqlRawAsync(command, parameters, ct);
+            await Database.ExecuteSqlRawAsync(command, parameters ?? Array.Empty<object>(), ct);
         }
 
         public TResult ExecuteCommandAndGet<TResult>(string command,

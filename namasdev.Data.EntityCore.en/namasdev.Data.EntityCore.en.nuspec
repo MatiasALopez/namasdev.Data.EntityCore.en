@@ -3,13 +3,13 @@
   <metadata>
     <id>namasdev.Data.EntityCore.en</id>
     <version>2.0.0</version>
-    <title>namasdev Data Entity (EN)</title>
+    <title>namasdev Data EntityCore (EN)</title>
     <authors>Matias Alberto Lopez</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <!-- <icon>icon.png</icon> -->
     <projectUrl>https://github.com/MatiasALopez/namasdev.Data.Entity.en</projectUrl>
-    <description>namasdev Data Entity library (English)</description>
+    <description>namasdev Data EntityCore library (English)</description>
     <releaseNotes></releaseNotes>
     <copyright>2024</copyright>
     <tags>namasdev</tags>
