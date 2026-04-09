@@ -36,8 +36,11 @@ namespace namasdev.Data.EntityCore
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder
-                .UseSqlServer(_nameOrConnectionString, o => o.CommandTimeout(_commandTimeout));
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder
+                    .UseSqlServer(_nameOrConnectionString, o => o.CommandTimeout(_commandTimeout));
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
